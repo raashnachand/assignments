@@ -1,0 +1,16 @@
+Summer,Smith,2007,1/1/2024,~drloun,#drstethosc
+
+7/1/2024,drloun,boredom,adventurafil,qd
+1/2/2024,drstethosc,itchy head,scratchacine,prn
+10/2/2024,drloun,Wi-Fi Withdrawal Syndrome,placebazole,pc
+
+
+
+sudo setfacl -m u:administrator:rwx SummerSmith2007
+sudo setfacl -m u:drloun:rw- SummerSmith2007
+sudo setfacl -m u:drstethosc:rw- SummerSmith2007
+sudo setfacl -m o::--- SummerSmith2007
+
+sudo setfacl -m u:administrator:rwx RickSanchez1950
+sudo setfacl -m u:drloun:rw- RickSanchez1950
+sudo setfacl -m o::--- RickSanchez1950
