@@ -1,0 +1,230 @@
+---
+title: "Assignment 2"
+author: "Raashna Chand, 300607575"
+date: "01 May 2023"
+output: html_document
+---
+
+#Question 1
+a.
+
+```{r}
+  movies = read.csv("movies500.csv", header=TRUE)
+  genres = read.csv("genres.csv", header=TRUE)
+  movies_genres = read.csv("movies500_genres.csv", header=TRUE)
+```
+
+b. 
+
+```{r}
+  library(DBI)
+  library(RSQLite)
+  movies_conn <- dbConnect(RSQLite::SQLite(), "movies_db.sqlite")
+```
+
+c. 
+
+```{r}
+  dbWriteTable(movies_conn, "movies", movies, overwrite=TRUE)
+  dbWriteTable(movies_conn, "movies_genres", movies_genres, overwrite=TRUE)
+```
+
+d. 
+
+```{sql connection=movies_conn}
+  SELECT COUNT(*) FROM movies
+```
+
+e. 
+
+```{sql connection=movies_conn}
+  SELECT title, runtime, release_date
+  FROM movies
+  WHERE runtime>480
+  ORDER BY runtime
+```
+
+f. 
+
+```{sql connection=movies_conn}
+  SELECT title
+  FROM movies
+  WHERE title LIKE '%love%'
+```
+
+g. 
+```{sql connection=movies_conn}
+  DROP TABLE IF EXISTS genres
+```
+
+```{sql connection=movies_conn}
+  CREATE TABLE genres(
+  genre_id INTEGER,
+  genre_name TEXT,
+  PRIMARY KEY(genre_id)
+)
+```
+
+h.
+
+```{r}
+  dbWriteTable(movies_conn, "genres", genres, overwrite=TRUE)
+```
+
+```{sql connection=movies_conn}
+SELECT * FROM genres
+```
+
+i.
+
+```{sql connection=movies_conn}
+  INSERT INTO genres(genre_id, genre_name)
+  VALUES
+  (3579, "University Comedy")
+```
+
+j.
+```{sql connection=movies_conn}
+  UPDATE genres SET genre_name = "University Tragedy" WHERE genre_id = 3579
+```
+
+k.
+
+```{sql connection=movies_conn}
+  SELECT movies.title, movies_genres.genre_id
+  FROM movies LEFT JOIN movies_genres
+  ON movies.tmdbId=movies_genres.tmdbId
+  WHERE title LIKE "Running Wild"
+```
+Genre identifiers for "Running Wild" - 12 and 18.
+
+l.
+```{sql connection=movies_conn}
+  SELECT movies.title, genres.genre_id, genres.genre_name 
+  FROM movies 
+  JOIN movies_genres
+  ON movies.tmdbId=movies_genres.tmdbId
+  JOIN genres
+  ON genres.genre_id=movies_genres.genre_id
+  WHERE title LIKE "Running Wild"
+```
+
+m.
+```{sql connection=movies_conn}
+  SELECT movies.title, genres.genre_id, genres.genre_name 
+  FROM movies 
+  JOIN movies_genres
+  ON movies.tmdbId=movies_genres.tmdbId
+  JOIN genres
+  ON genres.genre_id=movies_genres.genre_id
+  WHERE title LIKE "Running Wild"
+```
+#Question 2
+
+```{r}
+  library(dplyr)
+  library(tidyr)
+  vehicles <- read.csv("motor_vehicle_modified.csv", stringsAsFactors = FALSE)
+```
+
+a. 
+
+```{r}
+  vehicles_count <- rename(filter(vehicles, (make == "Kia" || make == "Honda") & transmission_type == "4-gear auto"))
+  nrow(vehicles_count)
+```
+
+b.
+
+```{r}
+  vehicles <- select(vehicles, -vehicle_usage, -vehicle_type)
+  head(vehicles, 10)
+```
+c. 
+
+```{r}
+  vehicles_country_status<-vehicles %>% group_by(original_country, import_status) %>% mutate(count=n())
+```
+
+```{r}
+  arrange(vehicles_country_status, count)
+  head(vehicles_country_status, 3)
+```
+
+#Question 3
+
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+
+a. 
+
+```{r}
+ggplot(starwars) + geom_bar(aes(x = species)) + coord_flip()
+```
+
+b. 
+```{r}
+  species_count <- table(starwars$species)
+  starwars$num <- rep(NA, nrow(starwars))
+  for (i in nrow(starwars):1){
+    starwars$num[i] <- species_count[starwars$species[i]]
+  }
+  starwars
+```
+c. 
+```{r}
+  starwars$mainspecies <- rep(NA, nrow(starwars))
+  for (i in nrow(starwars):1){
+    if (!is.na(starwars$num[i])){
+      if (starwars$num[i] > 1){
+        starwars$mainspecies[i] <- starwars$species[i]
+      } else if (starwars$num[i] == 1){
+        starwars$mainspecies[i] <- "Other"
+      }
+    }
+  }
+starwars
+```
+
+d. 
+```{r}
+ggplot(starwars) + geom_point(aes(x=height, y=mass, colour=mainspecies), position="jitter")
+```
+
+e. 
+```{r}
+  row <- which.max(starwars$mass)
+  starwars$name[row]
+  starwars$height[row]
+  starwars$mass[row]
+  starwars$species[row]
+  #display name, height, weight, species of max row
+  starwars <- starwars[-row, ]
+  ggplot(starwars) + geom_point(aes(x=height, y=mass, colour=mainspecies), position="jitter")
+```
+
+f. 
+
+```{r}
+  starwars_species_subset = subset(starwars, species %in% c("Human", "Droid"))
+  ggplot(starwars_species_subset) + geom_point(aes(x = height, y = mass), position = "jitter") + facet_wrap(~species, ncol=2)
+```
+
+g. 
+
+```{r}
+  ggplot(starwars) + geom_boxplot(aes(x = mainspecies, y = height)) + labs(x="Species", y="Height (cm)")
+```
+
+h.
+
+```{r}
+  ggplot(starwars) + geom_bar(aes(x = mainspecies, fill = eye_color)) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + labs(x="Team", y="Count") + coord_flip()
+```
+
+
+
+
+
