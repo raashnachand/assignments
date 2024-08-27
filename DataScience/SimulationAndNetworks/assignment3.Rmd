@@ -1,0 +1,140 @@
+---
+title: "Assignment 3"
+author: "Raashna Chand, 300607575"
+date: "22 May 2023"
+output: html_document
+---
+
+```{r}
+#Loading appropriate packages
+library(ggplot2)
+library(network)
+library(sna)
+library(ergm)
+```
+#Question 1
+
+*a.*\n
+The probability of selecting a club is 1/4 / 25% / 0.25. The deck is evenly divided into the four suits.\n
+
+
+The probability of selecting a card that is 7 or higher is 28/54 / 51.85% / 0.5185. There are 7 cards that are 7 and higher - 7, 8, 9, 10, Jack, King, Queen. These occur across the four suits, so there are 28 cards that fit this criteria.\n
+
+*b.*\n
+```{r}
+card.draw <- function(n = 1, seed = 0){
+  #use first element of vector if vector is used
+  #account for errors too
+  set.seed(seed)
+  outcomes <- sample(1 : 52, n, replace = TRUE, prob = rep(1 / 52, 52))
+  suits <- rep(c("C", "H", "D", "S"), each = 13)
+  number <- rep(1:13, 4)
+  data <- data.frame(Suit = suits[outcomes], Number = number[outcomes])
+  sorting <- data.frame(table(data))
+  return(sorting)
+}
+```
+
+*c.*\n
+```{r error=TRUE}
+card.draw(n = 3.7, seed = 2) # Q1(c)i.
+card.draw(n = 3, seed = 'a') # Q1(c)ii.
+card.draw(n = c(3, 2), seed = c(1, 2)) # Q1(c)iii.
+card.draw(n = 4, seed = 0.3) # Q1(c)iv.
+```
+
+*d.*\n
+```{r}
+  data1 <- card.draw(n=1000000, seed = 0)
+  ggplot(data1) + geom_bar(aes(x = Suit, y = (..count..) / sum(..count..)))
+  ggplot(data1) + geom_bar(aes(x = Number, y = (..count..) / sum(..count..)))
+```
+
+*e.*\n
+```{r}
+data2 <- card.draw(n = 1000000, seed = 0)
+clubs_frequency <- table(data2$Suit)["C"] / length(data2$Suit)
+seven_higher_frequency <- table(data2$Number)[7:13] / length(data2$Number)
+clubs_frequency
+seven_higher_frequency
+```
+
+*f.*\n
+```{r}
+#calculating the actual expected value and variance
+x <- 1 : 52
+px <- c(0.019230769, rep=52)
+EX <- sum(px * x)
+EX
+
+VX <- sum(px * (x - EX)^2)
+VX
+```
+```{r}
+#Estimating the expected value and variance
+data3 <- card.draw(n = 1000000, seed = 0)
+data3$Number <- as.numeric(as.character(data3$Number))
+mean(data3$Number)
+var(data3$Number)
+```
+
+#Question 2
+```{r}
+monty_hall_variation_stick_with_choice <- function(n = 1, seed = 0){
+  set.seed(seed)
+  prizes <- c(0, 0, 1) # Use 0 to denote "goat" and 1 to denote "car".
+  prizes <- c("car", "goat", "goat") # Use strings.
+  door <- sample(x = prizes, size = n * 3,  replace = FALSE, prob = rep(1 / 3, times = 3))
+  contestant.door <- sample(x = 1 : 3,  size = 1)
+  available.doors <- 1 : 3
+  available.doors <- available.doors[-contestant.door]
+  montys.door <- sample(x = available.doors,  size = 1)
+  if (door[montys.door[1]] == "car"){
+    return(monty_hall_variation_stick_with_choice(n = 1, seed = 0))
+  }
+  if (door[contestant.door] == "car"){
+    win.a <- "car"
+  } else {
+    lose.a <- "goat"
+  }
+}
+```
+
+#Question 3
+
+
+
+#Question 4.
+a. Social network. Only one type of "node" is in the graph - humans.\n
+
+b. Directed network. Each dyad has only one value attached to it - whether or not one person lives close to another.\n
+
+c.\n
+```{r}
+closeness.adjacency.matrix <- matrix(c(NA, 0, 1, 0, 0, 1,
+                                        0, NA, 0, 1, 0, 0,
+                                        1, 0, NA, 0, 1, 1,
+                                        0, 1, 0, NA, 0, 0,
+                                        0, 0, 1, 0, NA, 1,
+                                        1, 0, 1, 0, 1, NA), 
+                                      nrow = 6, byrow = TRUE, 
+                                      dimnames = list(c("Allison", "Bob", "Cass", "Dennis", "Elliot", "Francis"), 
+                                                      c("Allison", "Bob", "Cass", "Dennis", "Elliot", "Francis")))
+
+proximity.net <- network(closeness.adjacency.matrix)
+set.vertex.attribute(proximity.net, attrname = "vertex.names", 
+                     value = c("Allison", "Bob", "Cass", "Dennis", "Elliot", "Francis"))
+as.matrix(proximity.net)
+```
+
+d.
+```{r}
+is.adjacent(proximity.net, 2, 3) # Bob 2 Cass 3
+```
+
+e. 
+```{r}
+set.seed(1)
+plot(proximity.net, displaylabels = TRUE, vertex.cex = 1.5)
+```
+

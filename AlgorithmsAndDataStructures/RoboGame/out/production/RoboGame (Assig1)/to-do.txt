@@ -1,0 +1,8 @@
+To do:
+- rework block node to throw error if no statement node detected
+
+Errors parser is throwing:
+- Not throwing an error upon finding a colon instead of a semicolon
+- Not throwing an error when it finds "turnRight" instead of "turnR"
+- Parser breaks when it finds a block with no statements
+- Parser does not throw error upon finding an extra close bracket

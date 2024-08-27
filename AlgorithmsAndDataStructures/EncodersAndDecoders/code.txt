@@ -1,0 +1,54 @@
+public static String compress(String input) {
+    StringBuilder compressed = new StringBuilder();
+    int inputLength = input.length();
+    int currentPosition = 0;
+
+    while (currentPosition < inputLength) {
+        int matchOffset = 0;
+        int matchLength = 0;
+        char nextCharacter = '\0';
+
+        // Search for the longest match using the KMP algorithm
+        int[] lps = computeLPSArray(input);
+        int j = 0;  // Index for the input string
+
+        for (int i = Math.max(0, currentPosition - WINDOW_SIZE); i < currentPosition; i++) {
+            while (j > 0 && input.charAt(i) != input.charAt(currentPosition + j)) {
+                j = lps[j - 1];
+            }
+
+            if (input.charAt(i) == input.charAt(currentPosition + j)) {
+                j++;
+            }
+
+            if (j > matchLength && j <= LOOKAHEAD_BUFFER_SIZE) {
+                matchLength = j;
+                matchOffset = currentPosition - i;
+                nextCharacter = (currentPosition + matchLength < inputLength) ? input.charAt(currentPosition + matchLength) : '\0';
+            }
+        }
+
+        // Output the Lempel-Ziv tuple
+        if (matchLength > 0) {
+            compressed.append("[").append(matchOffset).append("|").append(matchLength).append("|").append(nextCharacter).append("]");
+            currentPosition += matchLength + 1;
+        } else {
+            compressed.append("[0|0|").append(input.charAt(currentPosition)).append("]");
+            currentPosition++;
+        }
+    }
+
+    return compressed.toString();
+}
+
+if (matchLength > 0) {
+    matchLength -= LOOKAHEAD_BUFFER_SIZE;
+    int adjustedOffset = currentPosition - matchOffset - 1;  // Adjust the offset
+    compressed.append("[").append(adjustedOffset).append("|").append(matchLength).append("|").append(nextCharacter).append("]");
+    currentPosition += matchLength + 1;
+} else {
+    if (currentPosition < inputLength) {
+        compressed.append("[0|0|").append(input.charAt(currentPosition)).append("]");
+    }
+    currentPosition++;
+}

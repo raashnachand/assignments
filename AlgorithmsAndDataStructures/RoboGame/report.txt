@@ -1,0 +1,3 @@
+I attempted stages 0-2. I did not use any of my own robot programs to test my parser and execute methods. All the node classes are at the bottom of Parser.java.
+The parser works perfect when testing with the provided parser tester. I initially had a problem with something before submitting, but upon writing the problem here, I solved it.
+The actual program is also mostly perfect. However, if move() takes additional arguments, the robot just doesn't move at all. Obviously it's a problem with how I set up the EXPR nodes and its children, but my efforts to fix it have failed. I probably need to throw some error to debug it.
