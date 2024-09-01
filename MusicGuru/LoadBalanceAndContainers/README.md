@@ -14,6 +14,7 @@ Created:
 - Autoscalers to create and destroy instances according to demand.
 
 `Project 3 Part A Load Balancing.pdf` details the instructions as to how to create the above, and also contains a list of questions to answer.
+
 `chandraas_answers_partA.pdf` contains the proof of following the instructions and the answers to the aforementioned questions.
 
 ## Part B
@@ -23,4 +24,5 @@ Created:
 - Used Fargate clusters as an alternative to load balancing.
 
 As above, `Project 3 Part b.pdf` details the instructions as to how to create the above, and also contains a list of questions to answer.
+
 `chandraas_answers_partB.pdf` contains the proof of following the instructions and the answers to the aforementioned questions.

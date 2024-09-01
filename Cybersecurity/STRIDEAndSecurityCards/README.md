@@ -7,8 +7,8 @@ security cards as a guide and the STRIDE method on each element of the system.
 - Described threats and selected the most realistic threats with reasoning. Proposed mitigations to
 threats.
 
-`Aircraft-Service-Scenario-2023.pdf`: Description of the aircraft service application.
-`CYBR_271_Assignment_1_2023.pdf`: Assignment briefing.
-`security-cards-deck.pdf`: Deck of security cards.
-`security-cards.pdf`: Answers to the "Security Cards" section of the briefing.
-`STRIDE.pdf`: Answers to the "STRIDE" part of the briefing.
+- `Aircraft-Service-Scenario-2023.pdf`: Description of the aircraft service application.
+- `CYBR_271_Assignment_1_2023.pdf`: Assignment briefing.
+- `security-cards-deck.pdf`: Deck of security cards.
+- `security-cards.pdf`: Answers to the "Security Cards" section of the briefing.
+- `STRIDE.pdf`: Answers to the "STRIDE" part of the briefing.
